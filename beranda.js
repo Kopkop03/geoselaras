@@ -2,20 +2,26 @@ function renderBeranda() {
   return `
     <h1>Dashboard GeoSelaras</h1>
     <div class="beranda-container">
+      
+      <!-- Peta Mini Semua Program -->
       <div class="beranda-box">
         <h3>Visualisasi Peta Program</h3>
         <div id="berandaMap"></div>
       </div>
 
+      <!-- Analisis Tumpang Tindih -->
       <div class="beranda-box">
         <h3>Analisis Tumpang Tindih</h3>
         <div id="tumpangInfo"></div>
         <div id="tumpangList" style="margin-top:0.5rem;"></div>
       </div>
 
+      <!-- Monitoring & Evaluasi -->
       <div class="beranda-box">
         <h3>Monitoring & Evaluasi</h3>
-        <div id="monitoringStats"></div>
+        <div id="monitoringStats" class="monitoring-stats"></div>
+        
+        <h3 style="margin-top:1rem;">Monitoring & Evaluasi (Grafik)</h3>
         <canvas id="monitoringChart" style="max-height:160px; margin-top:8px;"></canvas>
       </div>
     </div>
@@ -23,13 +29,10 @@ function renderBeranda() {
 }
 
 function initBeranda() {
-  // ambil data program
   let programs = JSON.parse(localStorage.getItem("programs")) || [];
 
   // --- Peta mini semua program ---
-  if (typeof L === "undefined") {
-    console.warn("Leaflet (L) tidak ditemukan. Peta tidak akan ditampilkan.");
-  } else {
+  if (typeof L !== "undefined") {
     const map = L.map("berandaMap").setView([-6.2, 106.8], 10);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "© OpenStreetMap contributors"
@@ -48,26 +51,24 @@ function initBeranda() {
       else if (fisik >= 50) iconUrl = "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png";
 
       const marker = L.marker([lat, lng], {
-        icon: L.icon({ iconUrl, iconSize: [25,41], iconAnchor: [12,41] })
+        icon: L.icon({ iconUrl, iconSize: [25, 41], iconAnchor: [12, 41] })
       }).addTo(map);
 
       marker.bindPopup(`<b>${prog.nama || "-"}</b><br>Progres: ${fisik}%`);
       bounds.extend([lat, lng]);
     });
 
-    // fit to markers jika ada
     if (bounds.isValid()) {
       map.fitBounds(bounds.pad(0.2));
-      // kadang leaflet perlu invalidatesize
       setTimeout(() => map.invalidateSize(), 200);
     } else {
-      map.setView([-6.2,106.8], 5);
+      map.setView([-6.2, 106.8], 5);
     }
   }
 
   // --- Analisis tumpang tindih ---
-  const lokasiCount = {}; // lokasi => count
-  const lokasiPrograms = {}; // lokasi => array program strings
+  const lokasiCount = {}; 
+  const lokasiPrograms = {}; 
   programs.forEach(p => {
     if (!p || !p.lokasi) return;
     const key = p.lokasi.trim();
@@ -82,15 +83,12 @@ function initBeranda() {
     overlappingPrograms = overlappingPrograms.concat(lokasiPrograms[k]);
   });
 
-  const tumpangCountLocations = overlappingLocations.length;
-  const tumpangCountPrograms = overlappingPrograms.length;
-
   const tumpangInfoEl = document.getElementById("tumpangInfo");
   const tumpangListEl = document.getElementById("tumpangList");
   if (tumpangInfoEl) {
     tumpangInfoEl.innerHTML = `
-      <p><b>${tumpangCountLocations}</b> lokasi tumpang tindih</p>
-      <p><b>${tumpangCountPrograms}</b> program terlibat</p>
+      <p><b>${overlappingLocations.length}</b> lokasi tumpang tindih</p>
+      <p><b>${overlappingPrograms.length}</b> program terlibat</p>
     `;
   }
   if (tumpangListEl) {
@@ -117,11 +115,10 @@ function initBeranda() {
     `;
   }
 
-  // --- Chart (jika Chart tersedia) ---
+  // --- Chart ---
   try {
     if (typeof Chart !== "undefined" && document.getElementById("monitoringChart")) {
       const ctx = document.getElementById("monitoringChart").getContext("2d");
-      // hapus chart lama jika ada
       if (window._berandaChart) {
         window._berandaChart.destroy();
       }
