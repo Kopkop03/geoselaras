@@ -1,0 +1,347 @@
+/* ========== RESET DASAR ========== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* ========== BODY & LAYOUT UTAMA ========== */
+body {
+  background: #f5f6fa;
+  color: #2f3640;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ========== HEADER & NAVBAR ========== */
+header {
+  background: #ffffff;        /* Navbar putih */
+  color: black;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Logo + teks */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: black;
+}
+
+/* Gambar logo */
+.logo-img {
+  width: 40px;        /* medium size */
+  height: 40px;
+  object-fit: contain;
+}
+
+/* Container teks logo */
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.logo-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: black;
+}
+
+.logo-subtitle {
+  font-size: 0.8rem;
+  color: #555;
+}
+
+/* Menu navbar */
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 1rem;
+}
+
+nav a {
+  color: black;
+  text-decoration: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 5px;
+  transition: background 0.2s, color 0.2s, border-bottom 0.2s;
+}
+
+nav a:hover {
+  background: #f1f1f1;
+  color: #000;
+}
+
+nav a.active {
+  border-bottom: 2px solid #273c75;
+  font-weight: bold;
+}
+
+/* ========== KONTEN UTAMA ========== */
+main {
+  flex: 1;
+  padding: 2rem;
+}
+
+/* ========== FOOTER ========== */
+footer {
+  background: #dcdde1;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Placeholder peta */
+.map-placeholder {
+  background: #dcdde1;
+  padding: 2rem;
+  text-align: center;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+/* ========== FORM INPUT PROGRAM (Lebar besar & rata kiri) ========== */
+form {
+  width: 100%;              /* full lebar container */
+  max-width: 1000px;        /* lebih besar dari sebelumnya */
+  margin: 0 auto;           /* tetap di tengah halaman */
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+
+/* Baris form */
+form .form-group {
+  display: flex;
+  flex-direction: column;   /* label dan input jadi vertikal */
+  align-items: flex-start;  /* rata kiri */
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+/* Label rata kiri */
+form label {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-align: left;         /* pastikan label rata kiri */
+  width: 100%;
+}
+
+/* Input & select lebih lebar */
+form input,
+form select {
+  width: 100%;              /* full width */
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #fafafa;
+}
+
+/* Tombol submit */
+form button {
+  width: 100%;
+  padding: 1rem;
+  background: #273c75;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background: #40739e;
+}
+
+/* ========== PETA INTERAKTIF ========== */
+#map {
+  width: 100%;              /* mengikuti lebar form */
+  height: 400px;            /* diperbesar */
+  margin-top: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+/* Pesan error */
+.error {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: -0.8rem;
+  margin-bottom: 0.8rem;
+  flex-basis: 100%;
+}
+
+/* ========== PETA INTERAKTIF ========== */
+#map, #programMap, #rpjmdMap, .mini-map {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+/* Layout umum peta + data */
+.peta-container {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.peta-kiri {
+  flex: 1;
+}
+
+.peta-kanan {
+  flex: 1;
+}
+
+/* Peta mini per program */
+.mini-map {
+  height: 250px;
+}
+
+/* ========== RPJMD MODULE ====================== */
+.peta-container.rpjmd {
+  display: flex;
+  flex-wrap: wrap;      /* biar responsive */
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.peta-item {
+  flex: 1 1 45%;        /* 2 peta per baris */
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.rpjmd-stats {
+  background: #f5f6fa;
+  padding: 0.5rem;
+  border-radius: 5px;
+  font-size: 0.9rem;
+}
+
+/* Responsive mobile */
+@media (max-width: 768px) {
+  .peta-item {
+    flex: 1 1 100%;
+  }
+}
+
+/* Gap Map (untuk analisis spasial) */
+#gapMap {
+  height: 500px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+/* ========== MONITORING MODULE ================= */
+#monitoringContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.monitoring-item {
+  display: flex;
+  gap: 1rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.monitoring-item .mini-map {
+  flex: 1;
+  height: 200px;
+}
+
+.monitoring-item .monitoring-info {
+  flex: 1;
+}
+
+.beranda-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.beranda-box {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+#berandaMap {
+  height: 250px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+#monitoringChart {
+  margin-top: 1rem;
+}
+
+/* ========== RESPONSIVE DASHBOARD ========== */
+
+/* Default layout PC/Tablet: 3 kolom */
+.beranda-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Box isi dashboard */
+.beranda-box {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+/* Peta dashboard */
+#berandaMap {
+  height: 300px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* Responsive tablet (max 1024px): jadi 2 kolom */
+@media (max-width: 1024px) {
+  .beranda-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Responsive mobile (max 768px): jadi 1 kolom penuh */
+@media (max-width: 768px) {
+  .beranda-container {
+    grid-template-columns: 1fr;
+  }
+
+  #berandaMap {
+    height: 220px; /* peta lebih kecil di HP */
+  }
+
+  #monitoringChart {
+    height: 120px; /* grafik lebih kecil */
+  }
+}
