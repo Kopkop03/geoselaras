@@ -3,7 +3,7 @@ function renderBeranda() {
     <h1>Dashboard GeoSelaras</h1>
     <div class="beranda-container">
       
-      <!-- Peta Mini Semua Program -->
+      <!-- Peta Program -->
       <div class="beranda-box">
         <h3>Visualisasi Peta Program</h3>
         <div id="berandaMap"></div>
@@ -20,10 +20,14 @@ function renderBeranda() {
       <div class="beranda-box">
         <h3>Monitoring & Evaluasi</h3>
         <div id="monitoringStats" class="monitoring-stats"></div>
-        
-        <h3 style="margin-top:1rem;">Monitoring & Evaluasi (Grafik)</h3>
-        <canvas id="monitoringChart" style="max-height:160px; margin-top:8px;"></canvas>
       </div>
+
+      <!-- Grafik Monitoring -->
+      <div class="beranda-box">
+        <h3>Monitoring & Evaluasi (Grafik)</h3>
+        <canvas id="monitoringChart" style="max-height:260px; margin-top:8px;"></canvas>
+      </div>
+
     </div>
   `;
 }
@@ -40,10 +44,10 @@ function initBeranda() {
 
     const bounds = L.latLngBounds();
     programs.forEach(prog => {
-      if (!prog || !prog.lokasi) return;
+      if (!prog?.lokasi) return;
       const parts = prog.lokasi.split(",").map(s => parseFloat(s));
       if (parts.length < 2 || isNaN(parts[0]) || isNaN(parts[1])) return;
-      const lat = parts[0], lng = parts[1];
+      const [lat, lng] = parts;
 
       const fisik = prog.progres?.fisik || 0;
       let iconUrl = "https://maps.google.com/mapfiles/ms/icons/red-dot.png";
@@ -51,7 +55,7 @@ function initBeranda() {
       else if (fisik >= 50) iconUrl = "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png";
 
       const marker = L.marker([lat, lng], {
-        icon: L.icon({ iconUrl, iconSize: [25, 41], iconAnchor: [12, 41] })
+        icon: L.icon({ iconUrl, iconSize: [25,41], iconAnchor: [12,41] })
       }).addTo(map);
 
       marker.bindPopup(`<b>${prog.nama || "-"}</b><br>Progres: ${fisik}%`);
@@ -62,15 +66,15 @@ function initBeranda() {
       map.fitBounds(bounds.pad(0.2));
       setTimeout(() => map.invalidateSize(), 200);
     } else {
-      map.setView([-6.2, 106.8], 5);
+      map.setView([-6.2,106.8], 5);
     }
   }
 
   // --- Analisis tumpang tindih ---
-  const lokasiCount = {}; 
-  const lokasiPrograms = {}; 
+  const lokasiCount = {};
+  const lokasiPrograms = {};
   programs.forEach(p => {
-    if (!p || !p.lokasi) return;
+    if (!p?.lokasi) return;
     const key = p.lokasi.trim();
     lokasiCount[key] = (lokasiCount[key] || 0) + 1;
     lokasiPrograms[key] = lokasiPrograms[key] || [];
@@ -92,11 +96,9 @@ function initBeranda() {
     `;
   }
   if (tumpangListEl) {
-    if (overlappingPrograms.length === 0) {
-      tumpangListEl.innerHTML = "<p>Tidak ada program yang tumpang tindih.</p>";
-    } else {
-      tumpangListEl.innerHTML = "<ul>" + overlappingPrograms.map(x => `<li>${x}</li>`).join("") + "</ul>";
-    }
+    tumpangListEl.innerHTML = overlappingPrograms.length
+      ? "<ul>" + overlappingPrograms.map(x => `<li>${x}</li>`).join("") + "</ul>"
+      : "<p>Tidak ada program yang tumpang tindih.</p>";
   }
 
   // --- Statistik monitoring & evaluasi ---
@@ -115,19 +117,17 @@ function initBeranda() {
     `;
   }
 
-  // --- Chart ---
+  // --- Chart monitoring ---
   try {
     if (typeof Chart !== "undefined" && document.getElementById("monitoringChart")) {
       const ctx = document.getElementById("monitoringChart").getContext("2d");
-      if (window._berandaChart) {
-        window._berandaChart.destroy();
-      }
+      if (window._berandaChart) window._berandaChart.destroy();
+
       window._berandaChart = new Chart(ctx, {
         type: "bar",
         data: {
           labels: ["Total Program", "Avg Fisik (%)", "Total Anggaran (Rp)"],
           datasets: [{
-            label: "Statistik",
             data: [totalProgram, parseFloat(avgFisik.toFixed(1)), totalAnggaran],
             backgroundColor: ["#273c75", "#fbc531", "#44bd32"]
           }]
@@ -138,7 +138,24 @@ function initBeranda() {
           scales: {
             y: { beginAtZero: true }
           }
-        }
+        },
+        plugins: [{
+          id: 'customLabelsBelow',
+          afterDraw(chart) {
+            const {ctx, chartArea: {bottom}, scales: {x}} = chart;
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            ctx.fillStyle = '#000';
+            ctx.font = 'bold 12px Arial';
+
+            chart.data.datasets[0].data.forEach((value, index) => {
+              const xPos = x.getPixelForValue(index);
+              ctx.fillText(value, xPos, bottom + 25); // 🔽 turun 18px biar tidak bertabrakan
+            });
+            ctx.restore();
+          }
+        }]
       });
     }
   } catch (err) {
