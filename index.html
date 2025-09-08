@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GeoSelaras – Satu Peta, Satu Arah Pembangunan</title>
   <link rel="stylesheet" href="style.css">
+
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 </head>
@@ -12,9 +13,9 @@
   <!-- ========== HEADER / NAVBAR ========== -->
   <header>
     <div class="logo">
-      <img src="logo.png" alt="Logo GeoSelaras" class="logo-img">
+      <img src="../picture/logo.png" alt="Logo GeoSelaras" class="logo-img">
       <div class="logo-text">
-        <span class="logo-title">SILaras</span>
+        <span class="logo-title">GeoSelaras</span>
         <span class="logo-subtitle">Satu Peta, Satu Arah Pembangunan</span>
       </div>
     </div>
@@ -41,10 +42,11 @@
     <p>© 2025 GeoSelaras – Satu Peta, Satu Arah Pembangunan</p>
   </footer>
 
-  <!-- ======= External libraries (important: load BEFORE app.js) ======= -->
+  <!-- ======= External libraries (load BEFORE app.js) ======= -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
   <!-- ========== MODUL SETIAP MENU (lokal) ======= -->
   <script src="beranda.js"></script>
@@ -59,5 +61,3 @@
   <script src="app.js"></script>
 </body>
 </html>
-
-
