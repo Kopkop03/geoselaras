@@ -24,6 +24,7 @@ header {
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #ddd;
+  flex-wrap: wrap;            /* biar responsif */
 }
 
 /* Logo + teks */
@@ -32,12 +33,13 @@ header {
   align-items: center;
   gap: 0.6rem;
   color: black;
+  flex-shrink: 0;
 }
 
 /* Gambar logo */
 .logo-img {
-  width: 40px;        /* medium size */
-  height: 40px;
+  width: 45px;        
+  height: auto;
   object-fit: contain;
 }
 
@@ -64,6 +66,10 @@ nav ul {
   display: flex;
   list-style: none;
   gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  padding-left: 0;
+  margin-top: 0.5rem;
 }
 
 nav a {
@@ -72,6 +78,7 @@ nav a {
   padding: 0.3rem 0.6rem;
   border-radius: 5px;
   transition: background 0.2s, color 0.2s, border-bottom 0.2s;
+  font-size: 0.95rem;
 }
 
 nav a:hover {
@@ -108,9 +115,9 @@ footer {
 
 /* ========== FORM INPUT PROGRAM (Lebar besar & rata kiri) ========== */
 form {
-  width: 100%;              /* full lebar container */
-  max-width: 1000px;        /* lebih besar dari sebelumnya */
-  margin: 0 auto;           /* tetap di tengah halaman */
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
   background: #ffffff;
   padding: 2rem;
   border-radius: 10px;
@@ -120,8 +127,8 @@ form {
 /* Baris form */
 form .form-group {
   display: flex;
-  flex-direction: column;   /* label dan input jadi vertikal */
-  align-items: flex-start;  /* rata kiri */
+  flex-direction: column;
+  align-items: flex-start;
   margin-bottom: 1.5rem;
   width: 100%;
 }
@@ -130,14 +137,14 @@ form .form-group {
 form label {
   font-weight: bold;
   margin-bottom: 0.5rem;
-  text-align: left;         /* pastikan label rata kiri */
+  text-align: left;
   width: 100%;
 }
 
-/* Input & select lebih lebar */
+/* Input & select */
 form input,
 form select {
-  width: 100%;              /* full width */
+  width: 100%;
   padding: 0.8rem;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -164,12 +171,13 @@ form button:hover {
 
 /* ========== PETA INTERAKTIF ========== */
 #map {
-  width: 100%;              /* mengikuti lebar form */
-  height: 400px;            /* diperbesar */
+  width: 100%;
+  height: 400px;
   margin-top: 1rem;
   border: 1px solid #ccc;
   border-radius: 10px;
 }
+
 /* Pesan error */
 .error {
   color: red;
@@ -179,7 +187,7 @@ form button:hover {
   flex-basis: 100%;
 }
 
-/* ========== PETA INTERAKTIF ========== */
+/* Peta umum */
 #map, #programMap, #rpjmdMap, .mini-map {
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -212,13 +220,13 @@ form button:hover {
 /* ========== RPJMD MODULE ====================== */
 .peta-container.rpjmd {
   display: flex;
-  flex-wrap: wrap;      /* biar responsive */
+  flex-wrap: wrap;
   gap: 1rem;
   margin-top: 1rem;
 }
 
 .peta-item {
-  flex: 1 1 45%;        /* 2 peta per baris */
+  flex: 1 1 45%;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -235,14 +243,7 @@ form button:hover {
   font-size: 0.9rem;
 }
 
-/* Responsive mobile */
-@media (max-width: 768px) {
-  .peta-item {
-    flex: 1 1 100%;
-  }
-}
-
-/* Gap Map (untuk analisis spasial) */
+/* Gap Map */
 #gapMap {
   height: 500px;
   border: 1px solid #ccc;
@@ -275,6 +276,7 @@ form button:hover {
   flex: 1;
 }
 
+/* ========== BERANDA DASHBOARD ================= */
 .beranda-container {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
@@ -290,7 +292,7 @@ form button:hover {
 }
 
 #berandaMap {
-  height: 250px;
+  height: 300px;
   border-radius: 8px;
   border: 1px solid #ccc;
 }
@@ -299,49 +301,62 @@ form button:hover {
   margin-top: 1rem;
 }
 
-/* ========== RESPONSIVE DASHBOARD ========== */
+/* ========== RESPONSIVE DASHBOARD & NAVBAR ========== */
 
-/* Default layout PC/Tablet: 3 kolom */
-.beranda-container {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-/* Box isi dashboard */
-.beranda-box {
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 1rem;
-}
-
-/* Peta dashboard */
-#berandaMap {
-  height: 300px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-/* Responsive tablet (max 1024px): jadi 2 kolom */
+/* Tablet */
 @media (max-width: 1024px) {
   .beranda-container {
     grid-template-columns: 1fr 1fr;
   }
 }
 
-/* Responsive mobile (max 768px): jadi 1 kolom penuh */
+/* Mobile */
 @media (max-width: 768px) {
   .beranda-container {
     grid-template-columns: 1fr;
   }
 
   #berandaMap {
-    height: 220px; /* peta lebih kecil di HP */
+    height: 220px;
   }
 
   #monitoringChart {
-    height: 120px; /* grafik lebih kecil */
+    height: 120px;
+  }
+
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .logo {
+    margin-bottom: 0.5rem;
+  }
+
+  nav ul {
+    width: 100%;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  nav a {
+    display: block;
+    width: 100%;
+    padding: 0.6rem;
+  }
+}
+
+/* HP kecil */
+@media (max-width: 480px) {
+  .logo-title {
+    font-size: 1rem;
+  }
+
+  .logo-subtitle {
+    font-size: 0.7rem;
+  }
+
+  .logo-img {
+    width: 35px;
   }
 }
