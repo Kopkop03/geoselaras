@@ -33,7 +33,8 @@ header {
   align-items: center;
   gap: 0.6rem;
   color: black;
-  flex-shrink: 0;
+  flex: 1 1 auto;             /* logo fleksibel */
+  min-width: 200px;
 }
 
 /* Gambar logo */
@@ -62,11 +63,16 @@ header {
 }
 
 /* Menu navbar */
+nav {
+  flex: 2 1 auto;
+  width: 100%;
+}
+
 nav ul {
   display: flex;
   list-style: none;
   gap: 1rem;
-  flex-wrap: wrap;
+  flex-wrap: wrap;            /* menu bisa pindah baris */
   justify-content: flex-end;
   padding-left: 0;
   margin-top: 0.5rem;
@@ -333,10 +339,15 @@ form button:hover {
     margin-bottom: 0.5rem;
   }
 
+  nav {
+    width: 100%;
+  }
+
   nav ul {
     width: 100%;
-    flex-direction: column;
+    flex-direction: column;   /* menu jadi vertikal */
     gap: 0.5rem;
+    justify-content: flex-start;
   }
 
   nav a {
