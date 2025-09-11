@@ -1,4 +1,6 @@
-/* ========== RESET DASAR ========== */
+/* ============================================================
+  RESET DASAR
+============================================================ */
 * {
   margin: 0;
   padding: 0;
@@ -6,7 +8,9 @@
   font-family: Arial, sans-serif;
 }
 
-/* ========== BODY & LAYOUT UTAMA ========== */
+/* ============================================================
+  BODY & LAYOUT UTAMA
+============================================================ */
 body {
   background: #f5f6fa;
   color: #2f3640;
@@ -15,7 +19,9 @@ body {
   min-height: 100vh;
 }
 
-/* ========== HEADER & NAVBAR ========== */
+/* ============================================================
+  HEADER & NAVBAR
+============================================================ */
 header {
   background: #ffffff;
   color: black;
@@ -34,8 +40,8 @@ header {
 }
 
 .logo-img {
-  width: 40px;
-  height: 40px;
+  width: 70px;
+  height: 70px;
   object-fit: contain;
 }
 
@@ -46,13 +52,13 @@ header {
 }
 
 .logo-title {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: bold;
   color: black;
 }
 
 .logo-subtitle {
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: #555;
 }
 
@@ -80,20 +86,26 @@ nav a.active {
   font-weight: bold;
 }
 
-/* ========== KONTEN UTAMA ========== */
+/* ============================================================
+  KONTEN UTAMA
+============================================================ */
 main {
   flex: 1;
   padding: 2rem;
 }
 
-/* ========== FOOTER ========== */
+/* ============================================================
+  FOOTER
+============================================================ */
 footer {
   background: #dcdde1;
   text-align: center;
   padding: 1rem;
 }
 
-/* Placeholder peta */
+/* ============================================================
+  MAP PLACEHOLDER
+============================================================ */
 .map-placeholder {
   background: #dcdde1;
   padding: 2rem;
@@ -107,7 +119,9 @@ footer {
   border-radius: 8px;
 }
 
-/* Layout umum peta + data */
+/* ============================================================
+  LAYOUT UMUM PETA + DATA
+============================================================ */
 .peta-container {
   display: flex;
   gap: 1rem;
@@ -122,7 +136,9 @@ footer {
 .peta-kanan { flex: 1; }
 .mini-map { height: 250px; }
 
-/* ========== RPJMD MODULE ====================== */
+/* ============================================================
+  RPJMD MODULE
+============================================================ */
 .peta-container.rpjmd {
   display: flex;
   flex-wrap: wrap;
@@ -148,14 +164,9 @@ footer {
   font-size: 0.9rem;
 }
 
-/* Responsive mobile */
-@media (max-width: 768px) {
-  .peta-item { flex: 1 1 100%; }
-}
-
-#gapMap { height: 500px; border: 1px solid #ccc; border-radius: 8px; }
-
-/* ========== MONITORING MODULE ================= */
+/* ============================================================
+  MONITORING MODULE
+============================================================ */
 #monitoringContainer {
   display: flex;
   flex-direction: column;
@@ -172,13 +183,24 @@ footer {
   padding: 1rem;
 }
 
-.monitoring-item .mini-map { flex: 1; height: 200px; }
-.monitoring-item .monitoring-info { flex: 1; }
+.monitoring-item .mini-map {
+  flex: 1;
+  height: 200px;
+}
 
-/* ========== BERANDA DASHBOARD ================= */
+.monitoring-item .monitoring-info {
+  flex: 1;
+}
+
+/* ============================================================
+  BERANDA DASHBOARD
+============================================================ */
 .beranda-container {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
+  grid-template-areas:
+    "peta kosong monitoring"
+    "analisis graph graph";
   gap: 1rem;
   margin-top: 1rem;
 }
@@ -190,7 +212,12 @@ footer {
   padding: 1rem;
 }
 
-#berandaMap { height: 250px; border-radius: 8px; border: 1px solid #ccc; }
+#berandaMap {
+  height: 250px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
 #monitoringChart { margin-top: 1rem; }
 
 .monitoring-stats {
@@ -198,13 +225,38 @@ footer {
   line-height: 1.6;
   font-weight: 500;
   color: #2f3640;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
 }
 
-.beranda-box h3 { font-size: 1.4rem; font-weight: bold; margin-bottom: 0.8rem; }
+.beranda-box h3 {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 0.8rem;
+}
 
-/* Grafik Monitoring - span 2 kolom tepat di bawah Analisis + Monitoring */
+/* Grid Placement */
+.beranda-box:nth-of-type(1) { grid-area: peta; }
+.beranda-box:nth-of-type(2) { grid-area: analisis; }
+.beranda-box:nth-of-type(3) { grid-area: monitoring; }
+
+/* Kosong sementara */
+.empty-box {
+  grid-area: kosong;
+  background: #fff;
+  border: 1px dashed #aaa;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  color: #777;
+  font-style: italic;
+}
+
+/* Grafik Monitoring */
 .graph-box {
-  grid-column: 2 / span 2;
+  grid-area: graph;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -216,10 +268,114 @@ footer {
   height: 260px;
 }
 
-/* ========== INPUT FORM STYLING (berlaku untuk semua layar) ========== */
+/* ============================================================
+  ANALISIS TUMPANG TINDAH BLOCK
+============================================================ */
+.tumpang-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 1rem;
+  background: #fdfdfd;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.8rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.tumpang-column {
+  flex: 1;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.8rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow-y: auto;
+  max-height: 250px;
+}
+
+.tumpang-column p {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #2f3640;
+}
+
+.tumpang-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+}
+
+.tumpang-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #eee;
+  font-size: 0.95rem;
+  color: #2f3640;
+}
+
+.tumpang-divider {
+  width: 2px;
+  background: #ddd;
+  margin: 0 0.5rem;
+  border-radius: 2px;
+}
+
+/* Scrollbar ringan untuk kolom jika data banyak */
+.tumpang-column::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tumpang-column::-webkit-scrollbar-thumb {
+  background-color: rgba(39, 60, 117, 0.4);
+  border-radius: 3px;
+}
+
+.tumpang-column::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* Responsive adjustment */
+@media (max-width: 768px) {
+  .tumpang-container {
+    flex-direction: column;
+    padding: 0.5rem;
+  }
+
+  .tumpang-column {
+    max-height: none;
+  }
+
+  .tumpang-divider {
+    width: 100%;
+    height: 2px;
+    margin: 0.5rem 0;
+  }
+}
+
+#tumpangList {
+  margin-top: 0.8rem;
+  font-size: 0.95rem;
+}
+
+#tumpangList ul {
+  margin-top: 0.5rem;
+  padding-left: 1.2rem;
+}
+
+#tumpangList li {
+  margin-bottom: 0.4rem;
+  list-style-type: disc;
+}
+
+/* ============================================================
+  INPUT FORM STYLING
+============================================================ */
 .form-container {
   max-width: 600px;
-  margin: 2rem auto;       /* center rata tengah */
+  margin: 2rem auto;
   padding: 2rem;
   background: #fff;
   border: 1px solid #ddd;
@@ -270,26 +426,117 @@ footer {
   background: #192a56;
 }
 
-/* error message */
+/* Error message */
 .error {
   color: red;
   font-size: 0.85rem;
   margin-top: 0.3rem;
 }
 
-/* ========== RESPONSIVE DASHBOARD ========== */
+/* ============================================================
+  ANALISIS MODULE
+============================================================ */
+.analisis-box {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1.2rem;
+  margin-top: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.analisis-box.empty {
+  text-align: center;
+  font-size: 1rem;
+  color: #666;
+}
+
+.analisis-results {
+  margin-bottom: 1rem;
+  padding: 0.8rem 1rem;
+  background: #f5f6fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.analisis-results ul {
+  margin-top: 0.5rem;
+  padding-left: 1.2rem;
+}
+
+.analisis-results li {
+  margin-bottom: 0.4rem;
+  list-style-type: disc;
+}
+
+/* ============================================================
+  RESPONSIVE DASHBOARD
+============================================================ */
 @media (max-width: 1024px) {
   .beranda-container {
     grid-template-columns: 1fr 1fr 1fr;
-  }
-  .graph-box {
-    grid-column: 2 / span 2;
+    grid-template-areas:
+      "peta kosong monitoring"
+      "analisis graph graph";
   }
 }
 
 @media (max-width: 768px) {
-  .beranda-container { grid-template-columns: 1fr; }
-  .graph-box { grid-column: 1 / span 1; }
+  .beranda-container {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "peta"
+      "kosong"
+      "monitoring"
+      "analisis"
+      "graph";
+  }
+
   #berandaMap { height: 220px; }
   .graph-box canvas { height: 220px; }
+
+  .tumpang-container {
+    flex-direction: column;
+  }
+
+  .tumpang-divider {
+    width: 100%;
+    height: 2px;
+    margin: 0.5rem 0;
+  }
+}
+
+/* ============================================================
+  SEARCH BOX
+============================================================ */
+.search-box {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  justify-content: flex-start;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 12px 14px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.search-box button {
+  padding: 12px 20px;
+  font-size: 15px;
+  background-color: #273c75;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.search-box button:hover {
+  background-color: #192a56;
 }
