@@ -7,13 +7,26 @@ function renderBeranda() {
       <div class="beranda-box">
         <h3>Visualisasi Peta Program</h3>
         <div id="berandaMap"></div>
+
+        <!-- Search koordinat -->
+        <div class="search-box">
+          <input type="text" id="searchCoord" placeholder="contoh: -6.2,106.8" />
+          <button id="btnSearchCoord">Cari</button>
+        </div>
       </div>
 
       <!-- Analisis Tumpang Tindih -->
       <div class="beranda-box">
         <h3>Analisis Tumpang Tindih</h3>
-        <div id="tumpangInfo"></div>
-        <div id="tumpangList" style="margin-top:0.5rem;"></div>
+        <div class="tumpang-container">
+          <div class="tumpang-column">
+            <div id="tumpangLokasi"></div>
+          </div>
+          <div class="tumpang-divider"></div>
+          <div class="tumpang-column">
+            <div id="tumpangProgram"></div>
+          </div>
+        </div>
       </div>
 
       <!-- Monitoring & Evaluasi -->
@@ -24,7 +37,7 @@ function renderBeranda() {
 
       <!-- Grafik Monitoring -->
       <div class="graph-box">
-        <h3>Monitoring & Evaluasi (Grafik)</h3>
+        <h3>Grafik</h3>
         <canvas id="monitoringChart"></canvas>
       </div>
 
@@ -37,10 +50,10 @@ function initBeranda() {
 
   // --- Peta mini semua program ---
   if (typeof L !== "undefined") {
-    const map = L.map("berandaMap").setView([-6.2, 106.8], 10);
+    window._berandaMap = L.map("berandaMap").setView([-6.2, 106.8], 10);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "© OpenStreetMap contributors"
-    }).addTo(map);
+    }).addTo(window._berandaMap);
 
     const bounds = L.latLngBounds();
     programs.forEach(prog => {
@@ -49,21 +62,63 @@ function initBeranda() {
       if (parts.length < 2 || isNaN(parts[0]) || isNaN(parts[1])) return;
       const [lat, lng] = parts;
       const fisik = prog.progres?.fisik || 0;
+
       let iconUrl = "https://maps.google.com/mapfiles/ms/icons/red-dot.png";
       if (fisik >= 80) iconUrl = "https://maps.google.com/mapfiles/ms/icons/green-dot.png";
       else if (fisik >= 50) iconUrl = "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png";
+
       const marker = L.marker([lat, lng], {
         icon: L.icon({ iconUrl, iconSize: [25,41], iconAnchor: [12,41] })
-      }).addTo(map);
+      }).addTo(window._berandaMap);
+
       marker.bindPopup(`<b>${prog.nama || "-"}</b><br>Progres: ${fisik}%`);
       bounds.extend([lat, lng]);
     });
+
     if (bounds.isValid()) {
-      map.fitBounds(bounds.pad(0.2));
-      setTimeout(() => map.invalidateSize(), 200);
+      window._berandaMap.fitBounds(bounds.pad(0.2));
+      setTimeout(() => window._berandaMap.invalidateSize(), 200);
     } else {
-      map.setView([-6.2,106.8], 5);
+      window._berandaMap.setView([-6.2, 106.8], 5);
     }
+  }
+
+  // --- Search koordinat ---
+  const btnSearch = document.getElementById("btnSearchCoord");
+  if (btnSearch) {
+    btnSearch.addEventListener("click", () => {
+      const input = document.getElementById("searchCoord").value.trim();
+      if (!input) return;
+
+      const parts = input.split(",").map(s => parseFloat(s));
+      if (parts.length < 2 || isNaN(parts[0]) || isNaN(parts[1])) {
+        alert("Format salah. Gunakan contoh: -6.2,106.8");
+        return;
+      }
+
+      const [lat, lng] = parts;
+
+      if (window._searchMarker) window._berandaMap.removeLayer(window._searchMarker);
+
+      const foundPrograms = programs.filter(p => {
+        if (!p?.lokasi) return false;
+        const locParts = p.lokasi.split(",").map(s => parseFloat(s));
+        if (locParts.length < 2) return false;
+        const [plat, plng] = locParts;
+        return Math.abs(plat - lat) < 0.0001 && Math.abs(plng - lng) < 0.0001;
+      });
+
+      const popupContent = foundPrograms.length
+        ? `<b>Program:</b><br>${foundPrograms.map(p => p.nama || "-").join("<br>")}`
+        : "<b>Tidak ada program di lokasi ini</b>";
+
+      window._searchMarker = L.marker([lat, lng])
+        .addTo(window._berandaMap)
+        .bindPopup(popupContent)
+        .openPopup();
+
+      window._berandaMap.setView([lat, lng], 13);
+    });
   }
 
   // --- Analisis tumpang tindih ---
@@ -74,39 +129,60 @@ function initBeranda() {
     const key = p.lokasi.trim();
     lokasiCount[key] = (lokasiCount[key] || 0) + 1;
     lokasiPrograms[key] = lokasiPrograms[key] || [];
-    lokasiPrograms[key].push(`${p.nama || '-'} (${p.tahun || '-'})`);
+    lokasiPrograms[key].push(p.nama || "-");
   });
+
   const overlappingLocations = Object.keys(lokasiCount).filter(k => lokasiCount[k] > 1);
-  let overlappingPrograms = [];
-  overlappingLocations.forEach(k => {
-    overlappingPrograms = overlappingPrograms.concat(lokasiPrograms[k]);
-  });
-  const tumpangInfoEl = document.getElementById("tumpangInfo");
-  const tumpangListEl = document.getElementById("tumpangList");
-  if (tumpangInfoEl) {
-    tumpangInfoEl.innerHTML = `<p><b>${overlappingLocations.length}</b> lokasi tumpang tindih</p>
-                               <p><b>${overlappingPrograms.length}</b> program terlibat</p>`;
+  const tumpangLokasiEl = document.getElementById("tumpangLokasi");
+  const tumpangProgramEl = document.getElementById("tumpangProgram");
+
+  if (tumpangLokasiEl) {
+    tumpangLokasiEl.innerHTML = `
+      <p><b>${overlappingLocations.length}</b><br>lokasi tumpang tindih</p>
+      <hr>
+      ${
+        overlappingLocations.length
+          ? `<table class="tumpang-table"><tbody>${overlappingLocations.map(loc => `<tr><td>${loc}</td></tr>`).join("")}</tbody></table>`
+          : "<p>Tidak ada lokasi tumpang tindih.</p>"
+      }
+    `;
   }
-  if (tumpangListEl) {
-    tumpangListEl.innerHTML = overlappingPrograms.length ? "<ul>" + overlappingPrograms.map(x => `<li>${x}</li>`).join("") + "</ul>" : "<p>Tidak ada program yang tumpang tindih.</p>";
+
+  if (tumpangProgramEl) {
+    const overlappingPrograms = overlappingLocations.flatMap(k => lokasiPrograms[k]);
+    tumpangProgramEl.innerHTML = `
+      <p><b>${overlappingPrograms.length}</b><br>program terlibat</p>
+      <hr>
+      ${
+        overlappingPrograms.length
+          ? `<table class="tumpang-table"><tbody>${overlappingPrograms.map(p => `<tr><td>${p}</td></tr>`).join("")}</tbody></table>`
+          : "<p>Tidak ada program yang tumpang tindih.</p>"
+      }
+    `;
   }
 
   // --- Statistik monitoring & evaluasi ---
   const totalProgram = programs.length;
-  const avgFisik = totalProgram > 0 ? (programs.reduce((sum, p) => sum + (p.progres?.fisik || 0), 0) / totalProgram) : 0;
+  const avgFisik = totalProgram > 0 
+    ? (programs.reduce((sum, p) => sum + (p.progres?.fisik || 0), 0) / totalProgram)
+    : 0;
   const totalAnggaran = programs.reduce((sum, p) => sum + (parseInt(p.progres?.anggaran) || 0), 0);
+
   const monitoringStatsEl = document.getElementById("monitoringStats");
   if (monitoringStatsEl) {
-    monitoringStatsEl.innerHTML = `<p><b>Total Program Aktif:</b> ${totalProgram}</p>
-                                   <p><b>Rata-rata Progres Fisik:</b> ${avgFisik.toFixed(1)}%</p>
-                                   <p><b>Total Realisasi Anggaran:</b> Rp ${totalAnggaran.toLocaleString()}</p>`;
+    monitoringStatsEl.innerHTML = `
+      <p><b>Total Program Aktif:</b> ${totalProgram}</p>
+      <p><b>Rata-rata Progres Fisik:</b> ${avgFisik.toFixed(1)}%</p>
+      <p><b>Total Realisasi Anggaran:</b> Rp ${totalAnggaran.toLocaleString()}</p>
+    `;
   }
 
-  // --- Chart monitoring ---
+  // --- Chart monitoring (grid & angka Y dihapus) ---
   try {
     if (typeof Chart !== "undefined" && document.getElementById("monitoringChart")) {
       const ctx = document.getElementById("monitoringChart").getContext("2d");
       if (window._berandaChart) window._berandaChart.destroy();
+
       window._berandaChart = new Chart(ctx, {
         type: "bar",
         data: {
@@ -117,28 +193,30 @@ function initBeranda() {
           }]
         },
         options: {
-  responsive: true,
-  layout: { padding: { bottom: 20 } },
-  plugins: { legend: { display: false } },
-  scales: { y: { beginAtZero: true } }
-},
-       plugins: [{
-  id: 'customLabelsBelow',
-  afterDraw(chart) {
-    const {ctx, chartArea: {bottom}, scales: {x}} = chart;
-    ctx.save();
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-    ctx.fillStyle = '#000';
-    ctx.font = 'bold 12px Arial';
-    chart.data.datasets[0].data.forEach((value, index) => {
-      const xPos = x.getPixelForValue(index);
-      // Atur jarak vertical label angka
-      ctx.fillText(value, xPos, bottom + 30); // sebelumnya 25, sekarang 30
-    });
-    ctx.restore();
-  }
-}]
+          responsive: true,
+          layout: { padding: { bottom: 40 } },
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: true } },
+            y: { beginAtZero: true, grid: { display: true }, ticks: { display:false } } // <-- grid + angka Y dihapus
+          }
+        },
+        plugins: [{
+          id: 'customLabelsBelow',
+          afterDraw(chart) {
+            const {ctx, chartArea: {bottom}, scales: {x}} = chart;
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            ctx.fillStyle = '#000';
+            ctx.font = 'bold 12px Arial';
+            chart.data.datasets[0].data.forEach((value, index) => {
+              const xPos = x.getPixelForValue(index);
+              ctx.fillText(value, xPos, bottom + 30);
+            });
+            ctx.restore();
+          }
+        }]
       });
     }
   } catch (err) {
