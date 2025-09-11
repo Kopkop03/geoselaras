@@ -4,24 +4,28 @@ function renderMonitoring() {
     <p>Visualisasi progres fisik dan realisasi anggaran dalam peta dinamis.</p>
 
     <!-- Form Input Progres -->
-    <form id="progressForm">
+    <form id="progressForm" class="form-container">
       <div class="form-group">
         <label>Pilih Program:</label>
         <select name="program" id="programSelect" required></select>
       </div>
+
       <div class="form-group">
         <label>Persentase Fisik (%):</label>
         <input type="number" name="fisik" min="0" max="100" required>
       </div>
+
       <div class="form-group">
         <label>Realisasi Anggaran (Rp):</label>
         <input type="number" name="anggaran" required>
       </div>
+
       <div class="form-group">
         <label>Foto Lapangan:</label>
         <input type="file" name="foto" accept="image/*">
       </div>
-      <button type="submit">Simpan Progres</button>
+
+      <button type="submit" class="btn-submit">Simpan Progres</button>
     </form>
 
     <div id="monitoringContainer"></div>
@@ -44,6 +48,7 @@ function initMonitoring() {
   // Simpan progres
   form.addEventListener("submit", e => {
     e.preventDefault();
+
     const idx = programSelect.value;
     if (idx === "") {
       alert("Pilih program terlebih dahulu");
@@ -101,6 +106,7 @@ function renderProgramMonitoring(programs, container) {
     const [lat, lng] = prog.lokasi.split(",").map(Number);
     if (!isNaN(lat) && !isNaN(lng)) {
       const map = L.map(`map-${idx}`).setView([lat, lng], 13);
+
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "© OpenStreetMap"
       }).addTo(map);
