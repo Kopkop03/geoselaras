@@ -2,40 +2,44 @@ function renderInput() {
   return `
     <h1>Input Program</h1>
     <p>Form digital untuk memasukkan data program infrastruktur.</p>
-    <form id="programForm" novalidate>
-      <div class="form-group">
-        <label>Nama Kegiatan:</label>
-        <input type="text" name="nama" required>
-      </div>
-      <div class="form-group">
-        <label>Lokasi (koordinat):</label>
-        <input type="text" id="lokasiInput" name="lokasi" placeholder="Klik peta untuk memilih lokasi" required>
-      </div>
-      <div id="map" style="height:250px; margin-bottom:1rem;"></div>
-      <div class="form-group">
-        <label>Tahun Pelaksanaan:</label>
-        <input type="number" name="tahun" required>
-      </div>
-      <div class="form-group">
-        <label>Anggaran:</label>
-        <input type="number" name="anggaran" required>
-      </div>
-      <div class="form-group">
-        <label>Sektor:</label>
-        <select name="sektor" required>
-          <option value="">-- Pilih --</option>
-          <option value="jalan">Jalan</option>
-          <option value="irigasi">Irigasi</option>
-          <option value="pendidikan">Pendidikan</option>
-          <option value="kesehatan">Kesehatan</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Upload Dokumen (PDF):</label>
-        <input type="file" name="dokumen" accept="application/pdf" required>
-      </div>
-      <button type="submit">Simpan</button>
-    </form>
+    
+    <!-- FORM dibungkus card -->
+    <div class="form-container">
+      <form id="programForm" novalidate>
+        <div class="form-group">
+          <label>Nama Kegiatan:</label>
+          <input type="text" name="nama" required>
+        </div>
+        <div class="form-group">
+          <label>Lokasi (koordinat):</label>
+          <input type="text" id="lokasiInput" name="lokasi" placeholder="Klik peta untuk memilih lokasi" required>
+        </div>
+        <div id="map" style="height:250px; margin-bottom:1rem;"></div>
+        <div class="form-group">
+          <label>Tahun Pelaksanaan:</label>
+          <input type="number" name="tahun" required>
+        </div>
+        <div class="form-group">
+          <label>Anggaran:</label>
+          <input type="number" name="anggaran" required>
+        </div>
+        <div class="form-group">
+          <label>Sektor:</label>
+          <select name="sektor" required>
+            <option value="">-- Pilih --</option>
+            <option value="jalan">Jalan</option>
+            <option value="irigasi">Irigasi</option>
+            <option value="pendidikan">Pendidikan</option>
+            <option value="kesehatan">Kesehatan</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Upload Dokumen (PDF):</label>
+          <input type="file" name="dokumen" accept="application/pdf" required>
+        </div>
+        <button type="submit" class="btn-submit">Simpan</button>
+      </form>
+    </div>
   `;
 }
 
